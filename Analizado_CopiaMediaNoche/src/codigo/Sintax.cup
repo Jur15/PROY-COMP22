@@ -1,0 +1,342 @@
+package codigo;
+
+import java_cup.runtime.*;
+
+parser code
+{:
+    private Symbol s;
+    
+    public void syntax_error(Symbol s){
+        this.s = s;
+    }
+
+    public Symbol getS(){
+        return this.s;
+}
+:};
+ 
+terminal Linea, Comillas,   Cadena, If, Else,  While, Comiilas_Simples, simboloX, coma, Potencia , Modular, Type_Bool,
+
+    Igual, Suma, Resta, Multiplicacion, Division, Op_logico, Op_relacional, Print, Read, espacio,
+    Op_atribucion, Op_incremento, Parentesis_a, Parentesis_c,  Def,
+    Llave_a, Llave_c, Corchete_a, Corchete_c, Main, P_coma, G_Bajo, Identificador, D, L, L_Alone,
+    Numero  ,S_Dolar  , Return  , Switch, True ,False ,Case , Default, Punto, Break, Not, 
+    Type_Char, Null, Type_Int , Type_Float  ,D_Punto,  ERROR;
+
+
+non terminal INICIO,Numeros, AsigComplex_String_Global_Declaration, ParamTypes,Sentencia, VariableParameter  , CombinationBool ,
+AsigComplex_Char_Global_Declaration,AsigComplex_Int_Global , AsigNumber_Global_Declaration, Aux, AsigString_Declarate , 
+Variable_Arithmetic , AritmeticAux, AUXID, AUXNUM, ParamAuxFunction , InicioX , RepeatText ,
+AsigGlobalDeclaration, ASigMain, OperadoresConParentesis, ParamsDeclare_Function , Parameteres_Function ,
+AsigComplex_Float_Global, SENTENCE,RETORNED, CONDITIONAL_CASE , Conditional_Else, ParamAux, ReadDeclar ,
+DeclarationBoolean, LoopCase ,
+Combination_operationArithmetic ,CallVariable,CallFunction,AsigFunction,
+AsigChartypes_Global_Declaration, 
+Number_types, Parameteres,Type_Simple_Array,CallArray, Type_Char_Array , Char_types, AnyText,AsigChar_Declarate, DefaultStructure ,
+operationsMath, Type_Int_Array , operationsSymbols, ManyCase,
+Op_booleano, Combination_Op_relacional, Conditional_If , Conditional_switch,   Control_Structure , 
+Combination_operationArithmetic_Testing, Relacional_Variable, PrintDeclar ,
+Conditional_While;
+
+start with INICIO;
+
+INICIO ::=   InicioX | ASigMain | AsigFunction | ASigMain AsigFunction   | 
+ASigMain AsigFunction INICIO |  AsigFunction  INICIO | InicioX INICIO ;
+
+  
+ASigMain ::=  Type_Int Main Parentesis_a    Parentesis_c    Llave_a    SENTENCE  RETORNED  Llave_c  ;
+ 
+
+
+AUXID ::= Identificador | Identificador Op_incremento  ;
+ 
+AUXNUM ::= Numero | Resta Numero |  Suma Numero | Modular Numero;
+
+ 
+ 
+
+SENTENCE ::= Sentencia | AsigGlobalDeclaration | AsigGlobalDeclaration SENTENCE | 
+Control_Structure | Control_Structure SENTENCE  | Sentencia SENTENCE ;
+
+AsigGlobalDeclaration ::=   AsigComplex_Float_Global  |  Type_Char_Array | Type_Int_Array 
+|  AsigComplex_Int_Global  | DeclarationBoolean | PrintDeclar | ReadDeclar
+
+| Type_Simple_Array | CallArray | AsigComplex_Char_Global_Declaration | AsigNumber_Global_Declaration   | AsigChartypes_Global_Declaration |
+AsigComplex_String_Global_Declaration | CallFunction |  CallVariable ;
+
+AsigNumber_Global_Declaration ::= Type_Int  AUXID P_coma ; 
+AsigNumber_Global_Declaration ::= Type_Float  AUXID P_coma ; 
+AsigChartypes_Global_Declaration ::= Type_Char  AUXID P_coma ; 
+AsigChartypes_Global_Declaration ::= Cadena  AUXID P_coma ; 
+
+
+
+AsigComplex_Int_Global  ::= Type_Int AUXID  Igual   Combination_operationArithmetic P_coma     ;
+
+AsigComplex_Float_Global ::= Type_Float  AUXID  Igual   Numeros  P_coma     ; 
+
+
+RETORNED ::= Return AUXNUM P_coma|  Return AUXID P_coma | Return CallFunction P_coma | Return Numeros P_coma ;
+
+Variable_Arithmetic ::= AritmeticAux |  AUXNUM | Numeros  | CallArray   |
+ AUXNUM Variable_Arithmetic | Numeros Variable_Arithmetic |
+ AUXID  Variable_Arithmetic | CallArray  Variable_Arithmetic | OperadoresConParentesis  Variable_Arithmetic |  AritmeticAux Variable_Arithmetic;
+
+
+
+
+
+
+Combination_operationArithmetic ::=  AUXNUM      operationsSymbols       AUXNUM |     AUXNUM      operationsSymbols       AUXNUM  operationsSymbols Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  AUXNUM      operationsSymbols       Numeros |      AUXNUM     operationsSymbols      Numeros operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  AUXNUM      operationsSymbols       AUXID |  AUXNUM      operationsSymbols       AUXID operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  AUXNUM      operationsSymbols       CallArray |      AUXNUM      operationsSymbols       CallArray  operationsSymbols Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  AUXNUM      operationsSymbols       CallFunction |   AUXNUM      operationsSymbols       CallFunction operationsSymbols Combination_operationArithmetic   ;
+ 
+
+Combination_operationArithmetic ::=  Numeros      operationsSymbols       AUXNUM  |   Numeros      operationsSymbols       AUXNUM operationsSymbols Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  Numeros      operationsSymbols       Numeros |   Numeros      operationsSymbols       Numeros operationsSymbols Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  Numeros      operationsSymbols       AUXID  |   Numeros      operationsSymbols   AUXID  operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  Numeros      operationsSymbols       CallArray |    Numeros      operationsSymbols        CallArray  operationsSymbols Combination_operationArithmetic   ;
+Combination_operationArithmetic ::=  Numeros      operationsSymbols       CallFunction |   Numeros      operationsSymbols        CallFunction  operationsSymbols  Combination_operationArithmetic  ;
+
+Combination_operationArithmetic ::=  CallArray      operationsSymbols       AUXNUM  |  CallArray      operationsSymbols       AUXNUM operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  CallArray      operationsSymbols       Numeros |  CallArray      operationsSymbols       Numeros  operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  CallArray      operationsSymbols       AUXID |  CallArray      operationsSymbols       AUXID  operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  CallArray      operationsSymbols       CallArray |   CallArray      operationsSymbols       CallArray operationsSymbols  Combination_operationArithmetic   ;
+Combination_operationArithmetic ::=  CallArray      operationsSymbols       CallFunction |   CallArray      operationsSymbols       CallFunction  operationsSymbols   Combination_operationArithmetic  ;
+
+Combination_operationArithmetic ::=  AUXID      operationsSymbols       AUXNUM  |  AUXID      operationsSymbols       AUXNUM operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  AUXID      operationsSymbols       Numeros | AUXID      operationsSymbols       Numeros operationsSymbols Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  AUXID      operationsSymbols       AUXID | AUXID      operationsSymbols       AUXID operationsSymbols   Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  AUXID      operationsSymbols       CallArray |  AUXID      operationsSymbols       CallArray operationsSymbols Combination_operationArithmetic   ;
+Combination_operationArithmetic ::=  AUXID      operationsSymbols       CallFunction |  AUXID      operationsSymbols       CallFunction  operationsSymbols  Combination_operationArithmetic  ;
+
+ 
+
+
+Combination_operationArithmetic ::=  CallFunction      operationsSymbols       AUXNUM  |  CallFunction      operationsSymbols       AUXNUM operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  CallFunction      operationsSymbols       Numeros | CallFunction      operationsSymbols       Numeros operationsSymbols Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  CallFunction      operationsSymbols       AUXID | CallFunction      operationsSymbols       AUXID operationsSymbols   Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  CallFunction      operationsSymbols       CallArray |  CallFunction      operationsSymbols       CallArray operationsSymbols Combination_operationArithmetic   ;
+
+Combination_operationArithmetic ::=  CallFunction      operationsSymbols       CallFunction |  CallFunction      operationsSymbols       CallFunction  operationsSymbols  Combination_operationArithmetic  ;
+
+
+
+
+
+Combination_operationArithmetic_Testing ::=  Variable_Arithmetic      operationsSymbols       Variable_Arithmetic  |  Variable_Arithmetic      operationsSymbols       Variable_Arithmetic  Combination_operationArithmetic_Testing ;
+
+
+OperadoresConParentesis ::=     Parentesis_a  AUXNUM  operationsSymbols   AUXNUM  Parentesis_c    ;
+OperadoresConParentesis ::=     Parentesis_a  AUXNUM  operationsSymbols   AUXID  Parentesis_c    ;
+
+OperadoresConParentesis ::=     Parentesis_a  AUXID  operationsSymbols   AUXNUM  Parentesis_c    ;
+OperadoresConParentesis ::=     Parentesis_a  AUXID  operationsSymbols   AUXID  Parentesis_c    ;
+
+
+
+ 
+RepeatText ::= AUXID | AUXID espacio AUXID  |AUXID espacio AUXID espacio RepeatText ;
+
+AsigChar_Declarate ::=  Comiilas_Simples   RepeatText   Comiilas_Simples ;
+
+PrintDeclar ::= Print Parentesis_a AsigString_Declarate Parentesis_c P_coma;
+
+ReadDeclar ::= Read  Parentesis_a Parameteres Parentesis_c P_coma ;
+
+AsigString_Declarate ::=  Comillas  AUXID   Comillas ;
+
+AsigComplex_Char_Global_Declaration ::= Type_Char  AUXID  Igual    AsigChar_Declarate    P_coma  ;
+AsigComplex_Char_Global_Declaration ::= AUXID  Igual     P_coma  ;
+
+
+ 
+AnyText ::= AUXID | AUXNUM | simboloX |AUXID AnyText | AUXNUM AnyText | simboloX AnyText; 
+
+AsigComplex_String_Global_Declaration ::=  AUXID  Igual  AsigString_Declarate P_coma;
+
+ParamTypes ::=   Number_types  |  Char_types  ;
+
+VariableParameter ::= AUXID | AsigChar_Declarate | CallFunction | AUXNUM | Numeros | Op_booleano | AsigString_Declarate | AsigString_Declarate VariableParameter | Op_booleano VariableParameter|
+AUXID VariableParameter | AsigChar_Declarate VariableParameter | CallFunction VariableParameter | AUXNUM VariableParameter | Numeros VariableParameter;
+
+
+
+Parameteres ::= Read | ParamAux |  VariableParameter |  VariableParameter coma VariableParameter | ParamAux Parameteres  ;
+
+ 
+ParamsDeclare_Function ::= Type_Int AUXID |  Type_Char AUXID | Type_Float AUXID | Cadena AUXID ;
+
+ParamsDeclare_Function ::= Type_Int AUXID ParamsDeclare_Function |  Type_Char AUXID ParamsDeclare_Function |
+Type_Float AUXID  ParamsDeclare_Function | Cadena AUXID ParamsDeclare_Function;
+
+
+ Parameteres_Function ::= ParamAuxFunction |  ParamsDeclare_Function |  ParamsDeclare_Function coma ParamsDeclare_Function | ParamAux Parameteres  ;
+
+
+
+ AsigFunction ::= Type_Int  AUXID   Parentesis_a   Parentesis_c Llave_a    SENTENCE RETORNED Llave_c ;
+ AsigFunction ::= Type_Float  AUXID   Parentesis_a   Parentesis_c Llave_a    SENTENCE RETORNED Llave_c  ;
+ AsigFunction ::= Type_Char  AUXID   Parentesis_a   Parentesis_c Llave_a    SENTENCE RETORNED Llave_c  ;
+ AsigFunction ::= Cadena  AUXID   Parentesis_a   Parentesis_c Llave_a    SENTENCE RETORNED Llave_c  ;
+
+
+
+
+ AsigFunction ::= Type_Int  AUXID   Parentesis_a  Parameteres_Function Parentesis_c Llave_a    SENTENCE RETORNED Llave_c ;
+ AsigFunction ::= Type_Float  AUXID   Parentesis_a Parameteres_Function  Parentesis_c Llave_a    SENTENCE RETORNED Llave_c  ;
+ AsigFunction ::= Type_Char  AUXID   Parentesis_a Parameteres_Function  Parentesis_c Llave_a    SENTENCE RETORNED Llave_c  ;
+ AsigFunction ::= Cadena  AUXID   Parentesis_a Parameteres_Function  Parentesis_c Llave_a    SENTENCE  RETORNED Llave_c  ;
+
+
+
+
+CallFunction ::= AUXID Parentesis_a     Parentesis_c    |  AUXID Parentesis_a Parameteres    Parentesis_c  ;
+
+CallFunction ::= Not Parentesis_a AUXID Parentesis_a     Parentesis_c Parentesis_c |  
+                 Not Parentesis_a AUXID Parentesis_a  Parameteres   Parentesis_c Parentesis_c  | 
+                 Not Parentesis_a AUXID Parentesis_a  Parameteres   Parentesis_c   Op_relacional AUXNUM Parentesis_c ;
+
+
+  
+
+
+
+
+CallVariable ::= AUXID       Igual         Combination_operationArithmetic          P_coma  ;
+ 
+CallVariable ::= AUXID  Igual AUXID P_coma;
+CallVariable ::= AUXID  Igual True P_coma;
+CallVariable ::= AUXID  Igual False P_coma;
+CallVariable ::= AUXID  Igual AUXNUM P_coma;
+CallVariable ::= AUXID  Igual Numeros P_coma;
+
+
+
+Control_Structure ::=  Conditional_If | Conditional_Else | Conditional_switch | Conditional_While  | Break  ;
+
+
+
+
+DefaultStructure ::= Default D_Punto SENTENCE;
+
+Conditional_Else ::=  Else   Llave_a    SENTENCE         Llave_c   ;
+
+
+CONDITIONAL_CASE ::= Case  AUXID D_Punto  ;
+CONDITIONAL_CASE ::= Case  AUXNUM D_Punto  ;
+
+LoopCase ::= CONDITIONAL_CASE  SENTENCE |   CONDITIONAL_CASE  SENTENCE LoopCase ;
+
+Conditional_switch ::=   Switch    Parentesis_a  AUXID  Parentesis_c Llave_a LoopCase DefaultStructure Llave_c   ;
+ 
+
+
+ 
+Conditional_If ::= If     Parentesis_a  Combination_Op_relacional   Parentesis_c      Llave_a     SENTENCE   Llave_c  Conditional_Else   ;
+ 
+ManyCase ::=  CONDITIONAL_CASE  SENTENCE ;
+ManyCase ::=  CONDITIONAL_CASE  SENTENCE ManyCase;
+
+Conditional_While  ::= While Parentesis_a Combination_Op_relacional Parentesis_c Llave_a   SENTENCE  Llave_c
+;
+
+
+Relacional_Variable ::= AUXNUM | AUXID | True | False | OperadoresConParentesis;
+
+Combination_Op_relacional ::= AUXNUM | AUXID | True | False ;
+
+Combination_Op_relacional ::= AUXNUM Op_logico Combination_Op_relacional| AUXID Op_logico Combination_Op_relacional |
+ True Op_logico Combination_Op_relacional | False Op_logico Combination_Op_relacional ;
+
+
+Combination_Op_relacional ::=  AUXNUM       Op_relacional        AUXNUM |     AUXNUM       Op_relacional        AUXNUM   Op_logico Combination_Op_relacional  ;
+Combination_Op_relacional ::=  AUXNUM       Op_relacional        Numeros |      AUXNUM      Op_relacional       Numeros  Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  AUXNUM       Op_relacional        AUXID |  AUXNUM       Op_relacional        AUXID  Op_relacional   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  AUXNUM       Op_relacional        CallArray |      AUXNUM       Op_relacional        CallArray   Op_logico Combination_Op_relacional  ;
+Combination_Op_relacional ::=  AUXNUM       Op_relacional        CallFunction |   AUXNUM       Op_relacional        CallFunction  Op_logico  Combination_Op_relacional   ;
+ 
+
+Combination_Op_relacional ::=  Numeros       Op_relacional        AUXNUM  |   Numeros       Op_relacional        AUXNUM  Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  Numeros       Op_relacional        Numeros |   Numeros       Op_relacional        Numeros Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  Numeros       Op_relacional        AUXID  |   Numeros       Op_relacional    AUXID   Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  Numeros       Op_relacional        CallArray |    Numeros       Op_relacional         CallArray  Op_logico  Combination_Op_relacional   ;
+Combination_Op_relacional ::=  Numeros       Op_relacional        CallFunction |   Numeros       Op_relacional         CallFunction   Op_logico   Combination_Op_relacional  ;
+
+Combination_Op_relacional ::=  CallArray       Op_relacional        AUXNUM  |  CallArray       Op_relacional        AUXNUM Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  CallArray       Op_relacional        Numeros |  CallArray       Op_relacional        Numeros   Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  CallArray       Op_relacional        AUXID |  CallArray       Op_relacional        AUXID   Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  CallArray       Op_relacional        CallArray |   CallArray       Op_relacional        CallArray  Op_logico   Combination_Op_relacional   ;
+Combination_Op_relacional ::=  CallArray       Op_relacional        CallFunction |   CallArray       Op_relacional        CallFunction   Op_logico   Combination_Op_relacional  ;
+
+Combination_Op_relacional ::=  AUXID       Op_relacional        AUXNUM  |  AUXID       Op_relacional        AUXNUM  Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  AUXID       Op_relacional        Numeros | AUXID       Op_relacional        Numeros Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  AUXID       Op_relacional        AUXID | AUXID       Op_relacional        AUXID  Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  AUXID       Op_relacional        CallArray |  AUXID       Op_relacional        CallArray  Op_logico Combination_Op_relacional   ;
+Combination_Op_relacional ::=  AUXID       Op_relacional        CallFunction |  AUXID       Op_relacional        CallFunction  Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  CallFunction       Op_relacional        AUXNUM  |  CallFunction       Op_relacional        AUXNUM  Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  CallFunction       Op_relacional        Numeros | CallFunction       Op_relacional        Numeros Op_logico Combination_Op_relacional  ;
+Combination_Op_relacional ::=  CallFunction       Op_relacional        AUXID | CallFunction       Op_relacional        AUXID  Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  CallFunction       Op_relacional        CallArray |  CallFunction       Op_relacional        CallArray  Op_logico  Combination_Op_relacional   ;
+Combination_Op_relacional ::=  CallFunction       Op_relacional        CallFunction |  CallFunction       Op_relacional        CallFunction   Op_logico  Combination_Op_relacional  ;
+ 
+
+
+Combination_Op_relacional ::=  True      Op_relacional        AUXNUM  |  True      Op_relacional        AUXNUM  Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  True      Op_relacional        Numeros | True      Op_relacional        Numeros Op_logico Combination_Op_relacional  ;
+Combination_Op_relacional ::=  True      Op_relacional        AUXID | True      Op_relacional        AUXID  Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  True      Op_relacional        CallArray |  True      Op_relacional        CallArray  Op_logico  Combination_Op_relacional   ;
+Combination_Op_relacional ::=  True      Op_relacional        OperadoresConParentesis |  True      Op_relacional        OperadoresConParentesis  Op_logico  Combination_Op_relacional  ;
+ 
+
+
+Combination_Op_relacional ::=  False      Op_relacional        AUXNUM  |  False      Op_relacional        AUXNUM  Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  False      Op_relacional        Numeros | False      Op_relacional        Numeros Op_logico Combination_Op_relacional  ;
+Combination_Op_relacional ::=  False      Op_relacional        AUXID | False      Op_relacional        AUXID  Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  False      Op_relacional        CallArray |  False      Op_relacional        CallArray  Op_logico  Combination_Op_relacional   ;
+Combination_Op_relacional ::=  False      Op_relacional        False|  False      Op_relacional        False  Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  False      Op_relacional        OperadoresConParentesis |  False      Op_relacional        OperadoresConParentesis  Op_logico  Combination_Op_relacional  ;
+
+
+
+
+
+Combination_Op_relacional ::=  OperadoresConParentesis       Op_relacional        AUXNUM |  OperadoresConParentesis       Op_relacional        AUXNUM   Op_logico   Combination_Op_relacional  ;
+
+
+Op_booleano ::=  True  | False   ;
+
+
+CombinationBool ::=  AUXID Op_relacional AUXID Op_logico False Op_logico CallFunction;
+ 
+DeclarationBoolean ::= Type_Bool AUXID Igual CombinationBool P_coma  ;
+
+
+ 
+operationsSymbols ::= operationsMath | Op_relacional     ;
+operationsMath ::=    Suma | Resta | Division | Multiplicacion  | Potencia | Modular  ;
+
+ 
+
+Number_types ::=  Type_Int | Type_Float    ;
+Char_types ::=   Type_Char |  Cadena   ;
+
+
+
+CallArray ::=  AUXID  Corchete_a  AUXNUM   Corchete_c ;
+
+
+Type_Simple_Array ::=  AUXID  Corchete_a  AUXNUM   Corchete_c  Igual Combination_operationArithmetic P_coma ;
+ 
+ 
+
+Type_Char_Array ::=   Type_Char    AUXID Corchete_a  AUXNUM   Corchete_c  P_coma ;
+Type_Int_Array ::=  Type_Int      AUXID Corchete_a  AUXNUM   Corchete_c P_coma ;
+
+
+
+Numeros ::= AUXNUM  Punto AUXNUM       ;
+
+
