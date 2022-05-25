@@ -51,10 +51,17 @@ espacio=   [\n|\r|\r\n]+
 /* Palabra reservada If */
 ( if ) {lexeme=yytext(); return If;}
 
+
+/* Palabra reservada For */
+( for ) {lexeme=yytext(); return For;}
+
 /* Palabra reservada Else */
 ( else ) {lexeme=yytext(); return Else;}
 
  
+/* Palabra reservada Struct */
+( struct ) {lexeme=yytext(); return Struct;}
+
 
 /* Palabra reservada While */
 ( while ) {lexeme=yytext(); return While;}

@@ -4,10 +4,15 @@ package codigo;
 public enum Tokens {
     
     Linea,
+    Struct,
     Def,
     Comillas,
-    Comiilas_Simples, Potencia, Modular, Type_Bool,
+    Comiilas_Simples,
+    Potencia,
+    Modular,
+    Type_Bool,
     coma,
+    For,
     Cadena,
     If,
     Else,    
@@ -43,8 +48,9 @@ public enum Tokens {
     Corchete_a,
     Corchete_c,
     Main,
-    P_coma, Print, Read,
-    
+    P_coma,
+    Print, 
+    Read,
     Identificador,
     Numero,
     G_Bajo,

@@ -13,11 +13,10 @@ public class Principal {
 
     public static void main(String[] args) throws Exception {
         
-         String ruta1 = miRuta + "/src/codigo/Lexer.flex";
+        String ruta1 = miRuta + "/src/codigo/Lexer.flex";
         String ruta2 = miRuta + "/src/codigo/LexerCup.flex";
-        
         //  C:/Users/jeudy/Downloads/Proyecto-_Compiladores-main/Proyecto-_Compiladores-main/AnalizadorLexico/AnalizadorLexico/src/codigo/Sintax.cup
-        
+   
         String[] rutaS = {"-parser", "Sintax",miRuta+"/src/codigo/Sintax.cup"};
         generar(ruta1, ruta2, rutaS);
     }

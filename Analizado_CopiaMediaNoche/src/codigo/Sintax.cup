@@ -17,8 +17,8 @@ parser code
  
 terminal Linea, Comillas,   Cadena, If, Else,  While, Comiilas_Simples, simboloX, coma, Potencia , Modular, Type_Bool,
 
-    Igual, Suma, Resta, Multiplicacion, Division, Op_logico, Op_relacional, Print, Read, espacio,
-    Op_atribucion, Op_incremento, Parentesis_a, Parentesis_c,  Def,
+    Igual, Suma, Resta, Multiplicacion, Division, Op_logico, Op_relacional, Print, Read, espacio, Struct ,
+    Op_atribucion, Op_incremento, Parentesis_a, Parentesis_c,  Def, For, 
     Llave_a, Llave_c, Corchete_a, Corchete_c, Main, P_coma, G_Bajo, Identificador, D, L, L_Alone,
     Numero  ,S_Dolar  , Return  , Switch, True ,False ,Case , Default, Punto, Break, Not, 
     Type_Char, Null, Type_Int , Type_Float  ,D_Punto,  ERROR;
@@ -26,11 +26,11 @@ terminal Linea, Comillas,   Cadena, If, Else,  While, Comiilas_Simples, simboloX
 
 non terminal INICIO,Numeros, AsigComplex_String_Global_Declaration, ParamTypes,Sentencia, VariableParameter  , CombinationBool ,
 AsigComplex_Char_Global_Declaration,AsigComplex_Int_Global , AsigNumber_Global_Declaration, Aux, AsigString_Declarate , 
-Variable_Arithmetic , AritmeticAux, AUXID, AUXNUM, ParamAuxFunction , InicioX , RepeatText ,
-AsigGlobalDeclaration, ASigMain, OperadoresConParentesis, ParamsDeclare_Function , Parameteres_Function ,
+Variable_Arithmetic , AritmeticAux, AUXID, AUXNUM, ParamAuxFunction  , InicioX , RepeatText , Declare_Struct,
+AsigGlobalDeclaration, ASigMain, OperadoresConParentesis, ParamsDeclare_Function , Parameteres_Function , VariableDeclaration ,
 AsigComplex_Float_Global, SENTENCE,RETORNED, CONDITIONAL_CASE , Conditional_Else, ParamAux, ReadDeclar ,
-DeclarationBoolean, LoopCase ,
-Combination_operationArithmetic ,CallVariable,CallFunction,AsigFunction,
+DeclarationBoolean, LoopCase , Call_Struct, Call_Struct_Declared ,
+Combination_operationArithmetic ,CallVariable,CallFunction,AsigFunction, Conditional_For ,
 AsigChartypes_Global_Declaration, 
 Number_types, Parameteres,Type_Simple_Array,CallArray, Type_Char_Array , Char_types, AnyText,AsigChar_Declarate, DefaultStructure ,
 operationsMath, Type_Int_Array , operationsSymbols, ManyCase,
@@ -40,7 +40,7 @@ Conditional_While;
 
 start with INICIO;
 
-INICIO ::=   InicioX | ASigMain | AsigFunction | ASigMain AsigFunction   | 
+INICIO ::=   InicioX | ASigMain | AsigFunction | Declare_Struct  | ASigMain AsigFunction    |  ASigMain AsigFunction Declare_Struct  INICIO |
 ASigMain AsigFunction INICIO |  AsigFunction  INICIO | InicioX INICIO ;
 
   
@@ -58,8 +58,8 @@ AUXNUM ::= Numero | Resta Numero |  Suma Numero | Modular Numero;
 SENTENCE ::= Sentencia | AsigGlobalDeclaration | AsigGlobalDeclaration SENTENCE | 
 Control_Structure | Control_Structure SENTENCE  | Sentencia SENTENCE ;
 
-AsigGlobalDeclaration ::=   AsigComplex_Float_Global  |  Type_Char_Array | Type_Int_Array 
-|  AsigComplex_Int_Global  | DeclarationBoolean | PrintDeclar | ReadDeclar
+AsigGlobalDeclaration ::=   AsigComplex_Float_Global  |  Type_Char_Array | Type_Int_Array | Call_Struct
+|  AsigComplex_Int_Global  | DeclarationBoolean | PrintDeclar | ReadDeclar | Call_Struct_Declared  
 
 | Type_Simple_Array | CallArray | AsigComplex_Char_Global_Declaration | AsigNumber_Global_Declaration   | AsigChartypes_Global_Declaration |
 AsigComplex_String_Global_Declaration | CallFunction |  CallVariable ;
@@ -72,6 +72,9 @@ AsigChartypes_Global_Declaration ::= Cadena  AUXID P_coma ;
 
 
 AsigComplex_Int_Global  ::= Type_Int AUXID  Igual   Combination_operationArithmetic P_coma     ;
+
+AsigComplex_Int_Global  ::= Type_Int AUXID  Igual  AUXNUM P_coma     ;
+
 
 AsigComplex_Float_Global ::= Type_Float  AUXID  Igual   Numeros  P_coma     ; 
 
@@ -111,9 +114,6 @@ Combination_operationArithmetic ::=  AUXID      operationsSymbols       Numeros 
 Combination_operationArithmetic ::=  AUXID      operationsSymbols       AUXID | AUXID      operationsSymbols       AUXID operationsSymbols   Combination_operationArithmetic  ;
 Combination_operationArithmetic ::=  AUXID      operationsSymbols       CallArray |  AUXID      operationsSymbols       CallArray operationsSymbols Combination_operationArithmetic   ;
 Combination_operationArithmetic ::=  AUXID      operationsSymbols       CallFunction |  AUXID      operationsSymbols       CallFunction  operationsSymbols  Combination_operationArithmetic  ;
-
- 
-
 
 Combination_operationArithmetic ::=  CallFunction      operationsSymbols       AUXNUM  |  CallFunction      operationsSymbols       AUXNUM operationsSymbols  Combination_operationArithmetic  ;
 Combination_operationArithmetic ::=  CallFunction      operationsSymbols       Numeros | CallFunction      operationsSymbols       Numeros operationsSymbols Combination_operationArithmetic  ;
@@ -215,7 +215,7 @@ CallVariable ::= AUXID  Igual Numeros P_coma;
 
 
 
-Control_Structure ::=  Conditional_If | Conditional_Else | Conditional_switch | Conditional_While  | Break  ;
+Control_Structure ::=  Conditional_If | Conditional_Else | Conditional_switch | Conditional_While | Conditional_For | Break  ;
 
 
 
@@ -235,7 +235,7 @@ Conditional_switch ::=   Switch    Parentesis_a  AUXID  Parentesis_c Llave_a Loo
 
 
  
-Conditional_If ::= If     Parentesis_a  Combination_Op_relacional   Parentesis_c      Llave_a     SENTENCE   Llave_c  Conditional_Else   ;
+Conditional_If ::= If  Parentesis_a  Combination_Op_relacional   Parentesis_c      Llave_a     SENTENCE   Llave_c  Conditional_Else   ;
  
 ManyCase ::=  CONDITIONAL_CASE  SENTENCE ;
 ManyCase ::=  CONDITIONAL_CASE  SENTENCE ManyCase;
@@ -243,6 +243,19 @@ ManyCase ::=  CONDITIONAL_CASE  SENTENCE ManyCase;
 Conditional_While  ::= While Parentesis_a Combination_Op_relacional Parentesis_c Llave_a   SENTENCE  Llave_c
 ;
 
+
+
+Conditional_For  ::= For Parentesis_a  AsigComplex_Int_Global  Combination_Op_relacional P_coma  AUXID Parentesis_c Llave_a   SENTENCE  Llave_c
+;
+
+VariableDeclaration ::=  AsigChartypes_Global_Declaration | AsigNumber_Global_Declaration | 
+ AsigChartypes_Global_Declaration VariableDeclaration | AsigNumber_Global_Declaration VariableDeclaration ;
+
+Declare_Struct ::= Struct AUXID Llave_a VariableDeclaration  Llave_c ;
+
+Call_Struct ::= AUXID Punto AUXID ;
+
+Call_Struct_Declared ::= Call_Struct P_coma;
 
 Relacional_Variable ::= AUXNUM | AUXID | True | False | OperadoresConParentesis;
 

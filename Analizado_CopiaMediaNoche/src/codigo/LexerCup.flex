@@ -99,6 +99,15 @@ espacio = [ \n|\r|\r\n ]+
 /* Palabra reservada null */
 ( bool ) {return new Symbol(sym.Type_Bool, yychar, yyline, yytext());}
 
+
+
+
+/* Palabra reservada null */
+( for ) {return new Symbol(sym.For, yychar, yyline, yytext());}  
+
+/* Palabra reservada scrut */
+( struct ) {return new Symbol(sym.Struct, yychar, yyline, yytext());}  
+
  
 
 
