@@ -63,6 +63,10 @@ espacio=   [\n|\r|\r\n]+
 ( struct ) {lexeme=yytext(); return Struct;}
 
 
+/* Palabra reservada Struct */
+( static ) {lexeme=yytext(); return Static;}
+
+
 /* Palabra reservada While */
 ( while ) {lexeme=yytext(); return While;}
 

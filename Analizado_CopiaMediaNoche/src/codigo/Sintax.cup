@@ -18,20 +18,20 @@ parser code
 terminal Linea, Comillas,   Cadena, If, Else,  While, Comiilas_Simples, simboloX, coma, Potencia , Modular, Type_Bool,
 
     Igual, Suma, Resta, Multiplicacion, Division, Op_logico, Op_relacional, Print, Read, espacio, Struct ,
-    Op_atribucion, Op_incremento, Parentesis_a, Parentesis_c,  Def, For, 
+    Op_atribucion, Op_incremento, Parentesis_a, Parentesis_c,  Def, For, Static ,
     Llave_a, Llave_c, Corchete_a, Corchete_c, Main, P_coma, G_Bajo, Identificador, D, L, L_Alone,
     Numero  ,S_Dolar  , Return  , Switch, True ,False ,Case , Default, Punto, Break, Not, 
     Type_Char, Null, Type_Int , Type_Float  ,D_Punto,  ERROR;
 
 
 non terminal INICIO,Numeros, AsigComplex_String_Global_Declaration, ParamTypes,Sentencia, VariableParameter  , CombinationBool ,
-AsigComplex_Char_Global_Declaration,AsigComplex_Int_Global , AsigNumber_Global_Declaration, Aux, AsigString_Declarate , 
+AsigComplex_Char_Global_Declaration,AsigComplex_Int_Global , AsigNumber_Global_Declaration, Aux, AsigString_Declarate , Global_Declaration ,
 Variable_Arithmetic , AritmeticAux, AUXID, AUXNUM, ParamAuxFunction  , InicioX , RepeatText , Declare_Struct,
 AsigGlobalDeclaration, ASigMain, OperadoresConParentesis, ParamsDeclare_Function , Parameteres_Function , VariableDeclaration ,
-AsigComplex_Float_Global, SENTENCE,RETORNED, CONDITIONAL_CASE , Conditional_Else, ParamAux, ReadDeclar ,
-DeclarationBoolean, LoopCase , Call_Struct, Call_Struct_Declared ,
+AsigComplex_Float_Global, SENTENCE,RETORNED, CONDITIONAL_CASE , Conditional_Else, ParamAux, ReadDeclar , auxiliador ,
+DeclarationBoolean, LoopCase , Call_Struct, Call_Struct_Declared , GLOBAL_VARAIBLES_TYPES ,
 Combination_operationArithmetic ,CallVariable,CallFunction,AsigFunction, Conditional_For ,
-AsigChartypes_Global_Declaration, 
+AsigChartypes_Global_Declaration,  InicioGlobalVariable , INICIO_GLOBAL_VARIABLE ,
 Number_types, Parameteres,Type_Simple_Array,CallArray, Type_Char_Array , Char_types, AnyText,AsigChar_Declarate, DefaultStructure ,
 operationsMath, Type_Int_Array , operationsSymbols, ManyCase,
 Op_booleano, Combination_Op_relacional, Conditional_If , Conditional_switch,   Control_Structure , 
@@ -40,10 +40,12 @@ Conditional_While;
 
 start with INICIO;
 
-INICIO ::=   InicioX | ASigMain | AsigFunction | Declare_Struct  | ASigMain AsigFunction    |  ASigMain AsigFunction Declare_Struct  INICIO |
+INICIO ::=   InicioX | ASigMain | AsigFunction | Declare_Struct | ASigMain AsigFunction | 
+
+ASigMain AsigFunction Declare_Struct  INICIO |
 ASigMain AsigFunction INICIO |  AsigFunction  INICIO | InicioX INICIO ;
 
-  
+ 
 ASigMain ::=  Type_Int Main Parentesis_a    Parentesis_c    Llave_a    SENTENCE  RETORNED  Llave_c  ;
  
 
@@ -190,7 +192,7 @@ Type_Float AUXID  ParamsDeclare_Function | Cadena AUXID ParamsDeclare_Function;
  AsigFunction ::= Type_Char  AUXID   Parentesis_a Parameteres_Function  Parentesis_c Llave_a    SENTENCE RETORNED Llave_c  ;
  AsigFunction ::= Cadena  AUXID   Parentesis_a Parameteres_Function  Parentesis_c Llave_a    SENTENCE  RETORNED Llave_c  ;
 
-
+AsigFunction ::= GLOBAL_VARAIBLES_TYPES;
 
 
 CallFunction ::= AUXID Parentesis_a     Parentesis_c    |  AUXID Parentesis_a Parameteres    Parentesis_c  ;
@@ -250,6 +252,16 @@ Conditional_For  ::= For Parentesis_a  AsigComplex_Int_Global  Combination_Op_re
 
 VariableDeclaration ::=  AsigChartypes_Global_Declaration | AsigNumber_Global_Declaration | 
  AsigChartypes_Global_Declaration VariableDeclaration | AsigNumber_Global_Declaration VariableDeclaration ;
+
+
+
+GLOBAL_VARAIBLES_TYPES ::=Static Type_Int  AUXID P_coma ; 
+GLOBAL_VARAIBLES_TYPES ::=Static Type_Float  AUXID P_coma ; 
+GLOBAL_VARAIBLES_TYPES ::=Static Type_Char  AUXID P_coma ; 
+GLOBAL_VARAIBLES_TYPES ::=Static Cadena  AUXID P_coma ; 
+
+
+Global_Declaration ::= auxiliador |  GLOBAL_VARAIBLES_TYPES  | GLOBAL_VARAIBLES_TYPES  VariableDeclaration | auxiliador Global_Declaration ;  
 
 Declare_Struct ::= Struct AUXID Llave_a VariableDeclaration  Llave_c ;
 

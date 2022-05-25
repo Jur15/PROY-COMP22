@@ -9,62 +9,63 @@ package codigo;
 public class sym {
   /* terminals */
   public static final int Op_relacional = 20;
-  public static final int True = 46;
-  public static final int Llave_c = 32;
-  public static final int Null = 54;
+  public static final int True = 47;
+  public static final int Llave_c = 33;
+  public static final int Null = 55;
   public static final int Def = 29;
-  public static final int Llave_a = 31;
+  public static final int Llave_a = 32;
   public static final int If = 5;
+  public static final int Static = 31;
   public static final int Potencia = 11;
-  public static final int Default = 49;
-  public static final int L = 40;
+  public static final int Default = 50;
+  public static final int L = 41;
   public static final int coma = 10;
   public static final int Else = 6;
-  public static final int Break = 51;
+  public static final int Break = 52;
   public static final int Read = 22;
-  public static final int Type_Char = 53;
-  public static final int D = 39;
-  public static final int Corchete_c = 34;
-  public static final int Corchete_a = 33;
-  public static final int Punto = 50;
-  public static final int Return = 44;
+  public static final int Type_Char = 54;
+  public static final int D = 40;
+  public static final int Corchete_c = 35;
+  public static final int Corchete_a = 34;
+  public static final int Punto = 51;
+  public static final int Return = 45;
   public static final int While = 7;
   public static final int Division = 18;
   public static final int Cadena = 4;
   public static final int Parentesis_c = 28;
-  public static final int Type_Int = 55;
+  public static final int Type_Int = 56;
   public static final int Parentesis_a = 27;
   public static final int For = 30;
-  public static final int Type_Float = 56;
-  public static final int P_coma = 36;
+  public static final int Type_Float = 57;
+  public static final int P_coma = 37;
   public static final int EOF = 0;
-  public static final int Not = 52;
+  public static final int Not = 53;
   public static final int error = 1;
-  public static final int Switch = 45;
+  public static final int Switch = 46;
   public static final int Type_Bool = 13;
-  public static final int False = 47;
+  public static final int False = 48;
   public static final int Comiilas_Simples = 8;
-  public static final int D_Punto = 57;
+  public static final int D_Punto = 58;
   public static final int Linea = 2;
   public static final int simboloX = 9;
   public static final int Op_atribucion = 25;
   public static final int Print = 21;
-  public static final int ERROR = 58;
-  public static final int Case = 48;
+  public static final int ERROR = 59;
+  public static final int Case = 49;
   public static final int Op_logico = 19;
-  public static final int G_Bajo = 37;
+  public static final int G_Bajo = 38;
   public static final int Modular = 12;
-  public static final int Identificador = 38;
+  public static final int Identificador = 39;
   public static final int Struct = 24;
-  public static final int S_Dolar = 43;
+  public static final int S_Dolar = 44;
   public static final int Resta = 16;
   public static final int espacio = 23;
   public static final int Multiplicacion = 17;
   public static final int Op_incremento = 26;
-  public static final int Numero = 42;
+  public static final int Numero = 43;
   public static final int Suma = 15;
-  public static final int L_Alone = 41;
-  public static final int Main = 35;
+  public static final int L_Alone = 42;
+  public static final int Main = 36;
   public static final int Igual = 14;
   public static final int Comillas = 3;
   public static final String[] terminalNames = new String[] {
@@ -99,6 +100,7 @@ public class sym {
   "Parentesis_c",
   "Def",
   "For",
+  "Static",
   "Llave_a",
   "Llave_c",
   "Corchete_a",

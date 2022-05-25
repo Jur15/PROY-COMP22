@@ -110,6 +110,10 @@ espacio = [ \n|\r|\r\n ]+
 
  
 
+/* Palabra reservada static */
+( static ) {return new Symbol(sym.Static, yychar, yyline, yytext());}  
+
+
 
 /* Palabra reservada null */
 ( Def ) {return new Symbol(sym.Def, yychar, yyline, yytext());}  

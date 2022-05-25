@@ -10,7 +10,7 @@ public enum Tokens {
     Comiilas_Simples,
     Potencia,
     Modular,
-    Type_Bool,
+    Type_Bool, Static, 
     coma,
     For,
     Cadena,
