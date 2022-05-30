@@ -21,3 +21,12 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+#Netbeans generated files
+Analizado_CopiaMediaNoche/nbproject/private/
+Analizado_CopiaMediaNoche/build/
+Analizado_CopiaMediaNoche/nbbuild/
+Analizado_CopiaMediaNoche/dist/
+Analizado_CopiaMediaNoche/nbdist/
+Analizado_CopiaMediaNoche/nbactions.xml
+Analizado_CopiaMediaNoche/nb-configuration.xml
