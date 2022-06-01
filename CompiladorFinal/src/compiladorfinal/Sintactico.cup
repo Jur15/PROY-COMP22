@@ -1,0 +1,1001 @@
+
+
+package compiladorfinal; 
+
+import java.util.LinkedList;
+import java_cup.runtime.*;
+ 
+
+
+
+//CODIGO DEL PARSER
+parser code 
+{:
+	public static Nodo padre;
+	public int contador=0;
+
+	//Listas para almacenar las PALABRAS RESERVADAS, SIMBOLOS, CADENAS Y VALORES NUMÉRICOS
+	public static LinkedList<String> PalabraReservada = new LinkedList<String>();
+	public static LinkedList<String> Simbolo = new LinkedList<String>();
+	public static LinkedList<String> Cadenas = new LinkedList<String>();
+  public static LinkedList<String> Variables = new LinkedList<String>();
+	public static LinkedList<String> ValoresNumericos = new LinkedList<String>();
+	
+  public static LinkedList<String> Errores = new LinkedList<String>();
+
+    
+    /**
+     * Método al que se llama automáticamente ante algún error sintactico.
+     **/ 
+    public void syntax_error(Symbol s){ 
+            System.err.println("Error Sintáctico en la Línea " + (s.left) +" Columna "+s.right+ ". No se esperaba este componente: " +s.value+".");
+            parser.Errores.add("Error Sintáctico en la Línea " + (s.left) +" Columna "+s.right+ ". No se esperaba este componente: " +s.value+". \n");
+    } 
+    /**
+     * Método al que se llama en el momento en que ya no es posible una recuperación de errores.
+     **/ 
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
+            System.err.println("Error síntactico irrecuperable en la Línea " + (s.left)+ " Columna "+s.right+". Componente " + s.value + " no reconocido."); 
+            parser.Errores.add("Error Sintáctico en la Línea " + (s.left) +" Columna "+s.right+ ". No se esperaba este componente: " +s.value+". \n");
+    }  
+:} 
+
+
+//PUNTUACION
+terminal String Linea;
+terminal String Comillas;
+terminal String   Cadena;
+terminal String If;
+terminal String Else;
+terminal String  While;
+terminal String Comiilas_Simples;
+terminal String simboloX;
+terminal String coma;
+terminal String Potencia ;
+terminal String Modular;
+terminal String Type_Bool;
+terminal String Igual;
+terminal String Suma;
+terminal String Resta;
+terminal String Multiplicacion;
+terminal String Division;
+terminal String Op_logico;
+terminal String Op_relacional;
+terminal String Print;
+terminal String Read;
+terminal String espacio;
+terminal String Struct ;
+terminal String Op_atribucion;
+terminal String Op_incremento;
+terminal String Parentesis_a;
+terminal String Parentesis_c;
+terminal String  Def;
+terminal String For;
+terminal String Static ;
+terminal String Llave_a;
+terminal String Llave_c;
+terminal String Corchete_a;
+terminal String Corchete_c;
+terminal String Main;
+terminal String P_coma;
+terminal String G_Bajo;
+terminal String Identificador;
+terminal String D;
+terminal String L;
+terminal String L_Alone;
+terminal String Numero  ;
+terminal String S_Dolar  ;
+terminal String Return  ;
+terminal String Switch;
+terminal String True ;
+terminal String False ;
+terminal String Case ;
+terminal String Default;
+terminal String Punto;
+terminal String Break;
+terminal String Not;
+terminal String Type_Char;
+terminal String Null;
+terminal String Type_Int ;
+terminal String Type_Float  ;
+terminal String D_Punto;
+terminal String  ERROR;
+
+terminal String rType_Int , rType_Float, rAUXID, rAsigNumber_Global_Declaration;
+//
+non terminal INI; 
+non terminal INSTRUCCIONES;
+non terminal INSTRUCCION;
+
+//
+non terminal INICIO; 
+non terminal Numeros; 
+non terminal  AsigComplex_String_Global_Declaration; 
+non terminal  ParamTypes; 
+non terminal Sentencia; 
+non terminal  VariableParameter  ; 
+non terminal  CombinationBool ; 
+non terminal AsigComplex_Char_Global_Declaration; 
+non terminal AsigComplex_Int_Global ; 
+non terminal  AsigNumber_Global_Declaration; 
+non terminal  Aux; 
+non terminal  AsigString_Declarate ; 
+non terminal  Global_Declaration ; 
+non terminal Variable_Arithmetic ; 
+non terminal  AritmeticAux; 
+non terminal  AUXID; 
+non terminal  AUXNUM; 
+non terminal  ParamAuxFunction  ; 
+non terminal  InicioX ; 
+non terminal  RepeatText ; 
+non terminal  Declare_Struct; 
+non terminal AsigGlobalDeclaration; 
+non terminal  OperadoresConParentesis; 
+non terminal  ParamsDeclare_Function ; 
+non terminal  Parameteres_Function ; 
+non terminal  VariableDeclaration ; 
+non terminal AsigComplex_Float_Global; 
+non terminal  SENTENCE; 
+non terminal RETORNED; 
+non terminal  CONDITIONAL_CASE ; 
+non terminal  Conditional_Else; 
+non terminal  ParamAux; 
+non terminal  ReadDeclar ; 
+non terminal  auxiliador ; 
+non terminal DeclarationBoolean; 
+non terminal  LoopCase ; 
+non terminal  Call_Struct; 
+non terminal  Call_Struct_Declared ; 
+non terminal  GLOBAL_VARAIBLES_TYPES ; 
+non terminal  Combination_operationArithmetic ; 
+non terminal CallVariable; 
+non terminal CallFunction; 
+non terminal AsigFunction; 
+non terminal  Conditional_For ; 
+non terminal AsigChartypes_Global_Declaration; 
+non terminal   InicioGlobalVariable ; 
+non terminal  INICIO_GLOBAL_VARIABLE ; 
+non terminal Number_types; 
+non terminal  Parameteres; 
+non terminal Type_Simple_Array; 
+non terminal CallArray; 
+non terminal  Type_Char_Array ; 
+non terminal  Char_types; 
+non terminal  AnyText; 
+non terminal AsigChar_Declarate; 
+non terminal  DefaultStructure ; 
+non terminal operationsMath; 
+non terminal  Type_Int_Array ; 
+non terminal  operationsSymbols; 
+non terminal  ManyCase; 
+non terminal Op_booleano; 
+non terminal  Combination_Op_relacional; 
+non terminal  Conditional_If ; 
+non terminal  Conditional_switch; 
+non terminal  Control_Structure ; 
+non terminal  Combination_operationArithmetic_Testing; 
+non terminal  Relacional_Variable; 
+non terminal  PrintDeclar, DeclarationBooleanSimple, AsigSimpleBoolean, ASigMain ; 
+non terminal Conditional_While, DeclareFloat, DeclareInt, DeclareChar, DeclareString;
+non terminal DeclareBoolean, AsigBool, AsigID_int;
+/* Precedences */
+precedence left Op_logico; 
+
+precedence left Suma, Resta;
+precedence left Multiplicacion, Division, Modular;
+
+
+//ESPECIFICAR CON QUE NO TERMINAL EMPEZAR
+
+
+
+
+start with INI; 
+
+
+
+
+INI::=INSTRUCCIONES:instr
+  {:
+
+    Nodo nd = new Nodo("INICIO");
+    nd.setIdNod(parser.contador++);
+    nd.AddHijos((Nodo) instr);
+    parser.padre = (Nodo) nd;
+
+      System.out.println("------------*************----------------");
+      System.out.println("Compilacion exitosa!");
+      System.out.println("------------*************----------------");
+
+    RESULT = instr;
+  :}
+;
+
+INSTRUCCIONES ::= 
+	INSTRUCCIONES:s1 INSTRUCCION:s2
+  {:
+    Nodo tmp = new Nodo("INSTRUCCIONES");
+    tmp.setValor(" Lista_Instrucciones ");
+    tmp.setIdNod(parser.contador++);
+    tmp.AddHijos((Nodo) s1);
+    tmp.AddHijos((Nodo) s2);
+
+    System.out.println("NODOS RAIZ tmp1: "+tmp.Etiqueta);
+    System.out.println("NODOS RAIZ s2: "+ ((Nodo)s2).getHijos());
+    RESULT=tmp;
+:}
+
+ | 	INSTRUCCION:s2
+ {:
+    Nodo tmp = new Nodo("INSTRUCCION");
+    tmp.setValor(" Instruccion ");
+    tmp.setIdNod(parser.contador++);
+    tmp.AddHijos((Nodo) s2);
+
+    System.out.println("NODOS RAIZ tmp2: "+tmp.Etiqueta);
+    System.out.println("NODOS RAIZ s2: "+ ((Nodo)s2).getHijos());
+
+    RESULT=tmp;
+
+  :}
+; 
+
+INSTRUCCION ::=  
+
+ASigMain:asig
+{:
+ 
+    Nodo tmp = new Nodo("MAIN");
+    tmp.setIdNod(parser.contador++);
+    
+    tmp.AddHijos((Nodo) asig);
+
+    RESULT=tmp;
+:}
+
+| DeclareInt:decl
+{:
+    Nodo tmp = new Nodo("Decl");
+    tmp.setIdNod(parser.contador++);
+    
+    tmp.AddHijos((Nodo) decl);
+
+    RESULT=tmp;
+
+
+:}
+
+| DeclareFloat:decl
+{:
+    Nodo tmp = new Nodo("Float");
+    tmp.setIdNod(parser.contador++);
+    
+    tmp.AddHijos((Nodo) decl);
+
+    RESULT=tmp;
+
+
+:}
+
+|
+
+DeclareChar:decl
+{:
+    Nodo tmp = new Nodo("Char");
+    tmp.setIdNod(parser.contador++);
+    
+    tmp.AddHijos((Nodo) decl);
+
+    RESULT=tmp;
+
+
+:}
+
+|
+
+DeclareString:decl
+{:
+    Nodo tmp = new Nodo("String");
+    tmp.setIdNod(parser.contador++);
+    
+    tmp.AddHijos((Nodo) decl);
+
+    RESULT=tmp;
+
+
+:}
+
+ |
+   
+DeclareBoolean:decl
+{:
+    Nodo tmp = new Nodo("Boolean");
+    tmp.setIdNod(parser.contador++);
+    
+    tmp.AddHijos((Nodo) decl);
+
+    RESULT=tmp;
+
+:}
+
+|
+
+AsigBool:decl
+{:
+    Nodo tmp = new Nodo("AsignacionBoolean");
+    tmp.setIdNod(parser.contador++);
+    
+    tmp.AddHijos((Nodo) decl);
+
+    RESULT=tmp;
+
+:}
+
+|
+
+
+AsigID_int:decl
+{:
+    Nodo tmp = new Nodo("Asignacion ID a Entero");
+    tmp.setIdNod(parser.contador++);
+    
+    tmp.AddHijos((Nodo) decl);
+
+    RESULT=tmp;
+
+:}
+|
+
+
+ error
+;
+ 
+
+AsigID_int::=  Identificador:rAUXID Igual Numero:rAUXNUM P_coma 
+{:
+     System.out.println("EN INSTRUCCION Asignacion Booleano TRUE ===>>>>>>>");
+     parser.Variables.add(rAUXID); parser.Simbolo.add("="); parser.ValoresNumericos.add(rAUXNUM); parser.Simbolo.add("#");
+
+      System.out.println("Nombre de la variable ===>>>>>>>" + rAUXID);
+ 
+        Nodo sim = new Nodo("Variables");
+        sim.setValor(rAUXID);
+        sim.setIdNod(parser.contador++);
+
+        Metodos.symbolTable.put(rAUXID, rAUXNUM);
+ 
+
+        Nodo var = new Nodo("Simbolo");
+        var.setValor("=");
+        var.setIdNod(parser.contador++);
+
+        Nodo asignacion = new Nodo("Numeral");
+        asignacion.setValor(rAUXNUM);
+        asignacion.setIdNod(parser.contador++);
+
+        sim.AddHijos((Nodo) var);
+        sim.AddHijos((Nodo) asignacion);
+
+        sim.setIdNod(parser.contador++);
+   
+       Metodos.ConfimarExistencia(rAUXID);
+       Metodos.ModificaValor(rAUXID, rAUXNUM);
+
+ 
+        RESULT=sim;
+    :}
+;
+
+
+
+AsigBool ::= Identificador:rAUXID Igual True P_coma  
+
+{:
+    System.out.println("EN INSTRUCCION Asignacion Booleano TRUE ===>>>>>>>");
+    parser.Variables.add(rAUXID); parser.Simbolo.add("="); parser.PalabraReservada.add("true"); parser.Simbolo.add("#");
+
+             
+       System.out.println("Nombre de la variable ===>>>>>>>" + rAUXID);
+     
+// Devuelve un true en caso de que encuentre algo, solo en caso de que sea true que existe la variable entonces se puede proceder
+// En caso de false es error semantico
+
+ 
+        Nodo sim = new Nodo("Variables");
+        sim.setValor(rAUXID);
+        sim.setIdNod(parser.contador++);
+
+        Metodos.symbolTable.put(rAUXID, true);
+ 
+
+        Nodo var = new Nodo("Simbolo");
+        var.setValor("=");
+        var.setIdNod(parser.contador++);
+
+        Nodo asignacion = new Nodo("True");
+        asignacion.setValor("true");
+        asignacion.setIdNod(parser.contador++);
+
+        sim.AddHijos((Nodo) var); 
+        sim.AddHijos((Nodo) asignacion);
+
+        sim.setIdNod(parser.contador++);
+
+        
+   
+  
+       Metodos.ConfimarExistencia(rAUXID);
+       String auxV = "true";
+       Metodos.ModificaValor(rAUXID, auxV);
+
+
+        RESULT=sim;
+
+ 
+
+
+      
+    :}
+|
+
+
+Identificador:rAUXID Igual False P_coma  
+{:
+    System.out.println("EN INSTRUCCION Asignacion Booleano false ===>>>>>>>");
+    parser.Variables.add(rAUXID); parser.Simbolo.add("="); parser.PalabraReservada.add("false"); parser.Simbolo.add("#");
+    System.out.println("Nombre de la variable ===>>>>>>>" + rAUXID);
+     
+     // Devuelve un false en caso de que encuentre algo, solo en caso de que sea false que existe la variable entonces se puede proceder
+
+ 
+        Nodo sim = new Nodo("Variables");
+        sim.setValor(rAUXID);
+        sim.setIdNod(parser.contador++);
+
+        Metodos.symbolTable.put(rAUXID, false);
+ 
+
+        Nodo var = new Nodo("Simbolo");
+        var.setValor("=");
+        var.setIdNod(parser.contador++);
+
+        Nodo asignacion = new Nodo("False");
+        asignacion.setValor("false");
+        asignacion.setIdNod(parser.contador++);
+
+        sim.AddHijos((Nodo) var); 
+        sim.AddHijos((Nodo) asignacion);
+
+        sim.setIdNod(parser.contador++);
+
+        
+   
+  
+       Metodos.ConfimarExistencia(rAUXID);
+       String auxV = "false";
+       Metodos.ModificaValor(rAUXID, auxV);
+
+        RESULT=sim;
+    :}
+
+
+;
+
+
+
+DeclareBoolean ::=  Type_Bool:rType_Bool  Identificador:rAUXID P_coma  
+
+{:
+    System.out.println("EN INSTRUCCION INT   =>>>>>>");
+    parser.PalabraReservada.add("bool"); parser.Variables.add(rAUXID); parser.Simbolo.add("#");
+      Nodo nd = new Nodo("Type_Bool");
+      nd.setValor("bool");
+      Nodo sim = new Nodo("Variables");
+      sim.setValor(rAUXID);
+      sim.setIdNod(parser.contador++);
+
+      Nodo para = new Nodo("Simbolo");
+      para.setValor("#");
+      para.setIdNod(parser.contador++);
+
+      nd.AddHijos((Nodo) sim);
+      nd.AddHijos((Nodo) para);
+      nd.setIdNod(parser.contador++);
+      
+     String AuxTipo = "bool";
+     Metodos.PermiteAgregarToken(AuxTipo, rAUXID );
+
+
+      RESULT=nd;
+    :} ;
+
+
+
+DeclareInt ::= Type_Int:rType_Int  Identificador:rAUXID P_coma  
+
+{:
+      System.out.println("EN INSTRUCCION INT===>>>>>>>");
+      parser.PalabraReservada.add("int"); parser.Variables.add(rAUXID); parser.Simbolo.add("#");
+
+      Nodo nd = new Nodo("Type_Int");
+      nd.setValor("int");
+      
+      Nodo sim = new Nodo("Variables");
+      sim.setValor(rAUXID);
+      sim.setIdNod(parser.contador++);
+
+      Nodo para = new Nodo("Simbolo");
+      para.setValor("#");
+      para.setIdNod(parser.contador++);
+
+
+      nd.AddHijos((Nodo) sim);
+      nd.AddHijos((Nodo) para);
+
+      nd.setIdNod(parser.contador++);
+     String AuxTipo = "int";
+     Metodos.PermiteAgregarToken(AuxTipo, rAUXID );
+      
+
+      RESULT=nd;
+    :}
+;
+
+
+
+
+DeclareFloat ::= Type_Float:rType_Float  Identificador:rAUXID P_coma  
+
+{:
+    System.out.println("EN INSTRUCCION FLOAT ===>>>>>>>");
+   parser.PalabraReservada.add("float"); parser.Variables.add(rAUXID); parser.Simbolo.add("#");
+
+      Nodo nd = new Nodo("Type_Float");
+      nd.setValor("float");
+      
+      Nodo sim = new Nodo("Variables");
+      sim.setValor(rAUXID);
+      sim.setIdNod(parser.contador++);
+
+      Nodo para = new Nodo("Simbolo");
+      para.setValor("#");
+      para.setIdNod(parser.contador++);
+
+
+      nd.AddHijos((Nodo) sim);
+      nd.AddHijos((Nodo) para);
+
+      nd.setIdNod(parser.contador++);
+     String AuxTipo = "float";
+     Metodos.PermiteAgregarToken(AuxTipo, rAUXID );
+
+      RESULT=nd;
+    :}
+ ;
+
+DeclareChar ::=  Type_Char:rType_Char  Identificador:rAUXID P_coma  
+
+{:
+    System.out.println("EN INSTRUCCION CHAR===>>>>>>>");
+    parser.PalabraReservada.add("char"); parser.Variables.add(rAUXID); parser.Simbolo.add("#");
+
+      Nodo nd = new Nodo("Type_Char");
+      nd.setValor("char");
+      
+      Nodo sim = new Nodo("Variables");
+      sim.setValor(rAUXID);
+      sim.setIdNod(parser.contador++);
+
+      Nodo para = new Nodo("Simbolo");
+      para.setValor("#");
+      para.setIdNod(parser.contador++);
+
+
+      nd.AddHijos((Nodo) sim);
+      nd.AddHijos((Nodo) para);
+
+      nd.setIdNod(parser.contador++);
+      String AuxTipo = "char";
+      Metodos.PermiteAgregarToken(AuxTipo, rAUXID );
+
+      RESULT=nd;
+    :}
+  
+
+;
+
+DeclareString ::= Cadena:rCadena  Identificador:rAUXID P_coma  
+
+{:
+    System.out.println("EN INSTRUCCION INT===>>>>>>>");
+    parser.PalabraReservada.add("string"); parser.Variables.add(rAUXID); parser.Simbolo.add("#");
+
+      Nodo nd = new Nodo("Cadena");
+      nd.setValor("string");
+      
+      Nodo sim = new Nodo("Variables");
+      sim.setValor(rAUXID);
+      sim.setIdNod(parser.contador++);
+
+      Nodo para = new Nodo("Simbolo");
+      para.setValor("#");
+      para.setIdNod(parser.contador++);
+
+
+      nd.AddHijos((Nodo) sim);
+      nd.AddHijos((Nodo) para);
+
+      nd.setIdNod(parser.contador++);
+      String AuxTipo = "string";
+      Metodos.PermiteAgregarToken(AuxTipo, rAUXID );
+
+      RESULT=nd;
+    :}
+;
+
+
+ASigMain ::=  Type_Int:rType_Int Main:rMain Parentesis_a    Parentesis_c    Llave_a     Llave_c 
+{: System.out.println("Sentencia analizada correctamente. Sin errores.MAIN"); 
+    parser.PalabraReservada.add(rType_Int);  parser.PalabraReservada.add(rMain);  parser.Simbolo.add("(");
+    parser.Simbolo.add(")"); parser.Simbolo.add("{"); parser.Simbolo.add("}");
+ 
+        Nodo sim = new Nodo("Declaradas");
+        sim.setValor(rType_Int);
+        sim.setIdNod(parser.contador++);
+
+        Nodo varmain = new Nodo("Main");
+        varmain.setValor(rMain);
+        varmain.setIdNod(parser.contador++);
+
+        Nodo var = new Nodo("Simbolo");
+        var.setValor("(");
+        var.setIdNod(parser.contador++);
+
+        Nodo var2 = new Nodo("Simbolos");
+        var2.setValor(")");
+        var2.setIdNod(parser.contador++);
+
+        Nodo var3 = new Nodo("Simbolo3");
+        var3.setValor("{");
+        var3.setIdNod(parser.contador++);
+
+        Nodo var4 = new Nodo("Simbolo4");
+        var4.setValor("}");
+        var4.setIdNod(parser.contador++);
+
+        sim.AddHijos((Nodo) varmain);
+        sim.AddHijos((Nodo) var);
+        sim.AddHijos((Nodo) var2);
+        sim.AddHijos((Nodo) var3);
+        sim.AddHijos((Nodo) var4);
+
+        sim.setIdNod(parser.contador++);
+
+        RESULT=sim;
+    :};
+
+
+
+
+AUXID ::= Identificador | Identificador Op_incremento  ;
+ 
+AUXNUM ::= Numero | Resta Numero |  Suma Numero | Modular Numero;
+
+
+ 
+ 
+
+SENTENCE ::= Sentencia | AsigGlobalDeclaration | AsigGlobalDeclaration SENTENCE | 
+Control_Structure | Control_Structure SENTENCE  | Sentencia SENTENCE ;
+
+AsigGlobalDeclaration ::=   AsigComplex_Float_Global  |  Type_Char_Array | Type_Int_Array | Call_Struct
+|  AsigComplex_Int_Global  | DeclarationBoolean | PrintDeclar | ReadDeclar | Call_Struct_Declared  
+
+| Type_Simple_Array | CallArray | AsigComplex_Char_Global_Declaration   | AsigChartypes_Global_Declaration |
+AsigComplex_String_Global_Declaration | CallFunction |  CallVariable ;
+
+
+AsigChartypes_Global_Declaration ::= Type_Char  AUXID P_coma ; 
+AsigChartypes_Global_Declaration ::= Cadena  AUXID P_coma ; 
+
+
+
+AsigComplex_Int_Global  ::= Type_Int AUXID  Igual   Combination_operationArithmetic P_coma     ;
+
+
+
+AsigComplex_Int_Global  ::= Type_Int AUXID  Igual  AUXNUM P_coma     ;
+
+
+AsigComplex_Float_Global ::= Type_Float  AUXID  Igual   Numeros  P_coma     ; 
+
+
+RETORNED ::= Return AUXNUM P_coma|  Return AUXID P_coma | Return CallFunction P_coma | Return Numeros P_coma ;
+
+Variable_Arithmetic ::= AritmeticAux |  AUXNUM | Numeros  | CallArray   |
+ AUXNUM Variable_Arithmetic | Numeros Variable_Arithmetic |
+ AUXID  Variable_Arithmetic | CallArray  Variable_Arithmetic | OperadoresConParentesis  Variable_Arithmetic |  AritmeticAux Variable_Arithmetic;
+
+
+
+ 
+
+
+Combination_operationArithmetic ::=  AUXNUM      operationsSymbols       AUXNUM;
+
+Combination_operationArithmetic ::=  AUXNUM      operationsSymbols       AUXNUM  operationsSymbols Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  AUXNUM      operationsSymbols       Numeros |      AUXNUM     operationsSymbols      Numeros operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  AUXNUM      operationsSymbols       AUXID |  AUXNUM      operationsSymbols       AUXID operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  AUXNUM      operationsSymbols       CallArray |      AUXNUM      operationsSymbols       CallArray  operationsSymbols Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  AUXNUM      operationsSymbols       CallFunction |   AUXNUM      operationsSymbols       CallFunction operationsSymbols Combination_operationArithmetic   ;
+ 
+
+Combination_operationArithmetic ::=  Numeros      operationsSymbols       AUXNUM  |   Numeros      operationsSymbols       AUXNUM operationsSymbols Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  Numeros      operationsSymbols       Numeros |   Numeros      operationsSymbols       Numeros operationsSymbols Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  Numeros      operationsSymbols       AUXID  |   Numeros      operationsSymbols   AUXID  operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  Numeros      operationsSymbols       CallArray |    Numeros      operationsSymbols        CallArray  operationsSymbols Combination_operationArithmetic   ;
+Combination_operationArithmetic ::=  Numeros      operationsSymbols       CallFunction |   Numeros      operationsSymbols        CallFunction  operationsSymbols  Combination_operationArithmetic  ;
+
+Combination_operationArithmetic ::=  CallArray      operationsSymbols       AUXNUM  |  CallArray      operationsSymbols       AUXNUM operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  CallArray      operationsSymbols       Numeros |  CallArray      operationsSymbols       Numeros  operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  CallArray      operationsSymbols       AUXID |  CallArray      operationsSymbols       AUXID  operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  CallArray      operationsSymbols       CallArray |   CallArray      operationsSymbols       CallArray operationsSymbols  Combination_operationArithmetic   ;
+Combination_operationArithmetic ::=  CallArray      operationsSymbols       CallFunction |   CallArray      operationsSymbols       CallFunction  operationsSymbols   Combination_operationArithmetic  ;
+
+Combination_operationArithmetic ::=  AUXID      operationsSymbols       AUXNUM  |  AUXID      operationsSymbols       AUXNUM operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  AUXID      operationsSymbols       Numeros | AUXID      operationsSymbols       Numeros operationsSymbols Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  AUXID      operationsSymbols       AUXID | AUXID      operationsSymbols       AUXID operationsSymbols   Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  AUXID      operationsSymbols       CallArray |  AUXID      operationsSymbols       CallArray operationsSymbols Combination_operationArithmetic   ;
+Combination_operationArithmetic ::=  AUXID      operationsSymbols       CallFunction |  AUXID      operationsSymbols       CallFunction  operationsSymbols  Combination_operationArithmetic  ;
+
+Combination_operationArithmetic ::=  CallFunction      operationsSymbols       AUXNUM  |  CallFunction      operationsSymbols       AUXNUM operationsSymbols  Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  CallFunction      operationsSymbols       Numeros | CallFunction      operationsSymbols       Numeros operationsSymbols Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  CallFunction      operationsSymbols       AUXID | CallFunction      operationsSymbols       AUXID operationsSymbols   Combination_operationArithmetic  ;
+Combination_operationArithmetic ::=  CallFunction      operationsSymbols       CallArray |  CallFunction      operationsSymbols       CallArray operationsSymbols Combination_operationArithmetic   ;
+
+Combination_operationArithmetic ::=  CallFunction      operationsSymbols       CallFunction |  CallFunction      operationsSymbols       CallFunction  operationsSymbols  Combination_operationArithmetic  ;
+
+
+
+
+
+Combination_operationArithmetic_Testing ::=  Variable_Arithmetic      operationsSymbols       Variable_Arithmetic  |  Variable_Arithmetic      operationsSymbols       Variable_Arithmetic  Combination_operationArithmetic_Testing ;
+
+
+OperadoresConParentesis ::=     Parentesis_a  AUXNUM  operationsSymbols   AUXNUM  Parentesis_c    ;
+OperadoresConParentesis ::=     Parentesis_a  AUXNUM  operationsSymbols   AUXID  Parentesis_c    ;
+
+OperadoresConParentesis ::=     Parentesis_a  AUXID  operationsSymbols   AUXNUM  Parentesis_c    ;
+OperadoresConParentesis ::=     Parentesis_a  AUXID  operationsSymbols   AUXID  Parentesis_c    ;
+
+
+
+ 
+RepeatText ::= AUXID | AUXID espacio AUXID  | AUXID espacio AUXID espacio RepeatText ;
+
+AsigChar_Declarate ::=  Comiilas_Simples   RepeatText   Comiilas_Simples ;
+
+PrintDeclar ::= Print Parentesis_a AsigString_Declarate Parentesis_c P_coma;
+
+ReadDeclar ::= Read  Parentesis_a Parameteres Parentesis_c P_coma ;
+
+AsigString_Declarate ::=  Comillas  AUXID   Comillas ;
+
+AsigComplex_Char_Global_Declaration ::= Type_Char  AUXID  Igual    AsigChar_Declarate    P_coma  ;
+AsigComplex_Char_Global_Declaration ::= AUXID  Igual     P_coma  ;
+
+
+ 
+AnyText ::= AUXID | AUXNUM | simboloX |AUXID AnyText | AUXNUM AnyText | simboloX AnyText; 
+
+AsigComplex_String_Global_Declaration ::=  AUXID  Igual  AsigString_Declarate P_coma;
+
+ParamTypes ::=   Number_types  |  Char_types  ;
+
+VariableParameter ::= AUXID | AsigChar_Declarate | CallFunction | AUXNUM | Numeros | Op_booleano | AsigString_Declarate | AsigString_Declarate VariableParameter | Op_booleano VariableParameter|
+AUXID VariableParameter | AsigChar_Declarate VariableParameter | CallFunction VariableParameter | AUXNUM VariableParameter | Numeros VariableParameter;
+
+
+
+Parameteres ::= Read | ParamAux |  VariableParameter |  VariableParameter coma VariableParameter | ParamAux Parameteres  ;
+
+ 
+ParamsDeclare_Function ::= Type_Int AUXID |  Type_Char AUXID | Type_Float AUXID | Cadena AUXID ;
+
+ParamsDeclare_Function ::= Type_Int AUXID ParamsDeclare_Function |  Type_Char AUXID ParamsDeclare_Function |
+Type_Float AUXID  ParamsDeclare_Function | Cadena AUXID ParamsDeclare_Function;
+
+
+ Parameteres_Function ::= ParamAuxFunction |  ParamsDeclare_Function |  ParamsDeclare_Function coma ParamsDeclare_Function | ParamAux Parameteres  ;
+
+
+
+ AsigFunction ::= Type_Int  AUXID   Parentesis_a   Parentesis_c Llave_a    SENTENCE RETORNED Llave_c ;
+ AsigFunction ::= Type_Float  AUXID   Parentesis_a   Parentesis_c Llave_a    SENTENCE RETORNED Llave_c  ;
+ AsigFunction ::= Type_Char  AUXID   Parentesis_a   Parentesis_c Llave_a    SENTENCE RETORNED Llave_c  ;
+ AsigFunction ::= Cadena  AUXID   Parentesis_a   Parentesis_c Llave_a    SENTENCE RETORNED Llave_c  ;
+
+
+
+
+ AsigFunction ::= Type_Int  AUXID   Parentesis_a  Parameteres_Function Parentesis_c Llave_a    SENTENCE RETORNED Llave_c ;
+ AsigFunction ::= Type_Float  AUXID   Parentesis_a Parameteres_Function  Parentesis_c Llave_a    SENTENCE RETORNED Llave_c  ;
+ AsigFunction ::= Type_Char  AUXID   Parentesis_a Parameteres_Function  Parentesis_c Llave_a    SENTENCE RETORNED Llave_c  ;
+ AsigFunction ::= Cadena  AUXID   Parentesis_a Parameteres_Function  Parentesis_c Llave_a    SENTENCE  RETORNED Llave_c  ;
+
+AsigFunction ::= GLOBAL_VARAIBLES_TYPES;
+
+
+CallFunction ::= AUXID Parentesis_a     Parentesis_c    |  AUXID Parentesis_a Parameteres    Parentesis_c  ;
+
+CallFunction ::= Not Parentesis_a AUXID Parentesis_a     Parentesis_c Parentesis_c |  
+                 Not Parentesis_a AUXID Parentesis_a  Parameteres   Parentesis_c Parentesis_c  | 
+                 Not Parentesis_a AUXID Parentesis_a  Parameteres   Parentesis_c   Op_relacional AUXNUM Parentesis_c ;
+
+
+  
+
+
+
+
+CallVariable ::= AUXID       Igual         Combination_operationArithmetic          P_coma  ;
+ 
+CallVariable ::= AUXID  Igual AUXID P_coma;
+CallVariable ::= AUXID  Igual True P_coma;
+CallVariable ::= AUXID  Igual False P_coma;
+CallVariable ::= AUXID  Igual AUXNUM P_coma;
+CallVariable ::= AUXID  Igual Numeros P_coma;
+
+
+
+Control_Structure ::=  Conditional_If | Conditional_Else | Conditional_switch | Conditional_While | Conditional_For | Break  ;
+
+
+
+
+DefaultStructure ::= Default D_Punto SENTENCE;
+
+Conditional_Else ::=  Else   Llave_a    SENTENCE         Llave_c   ;
+
+
+CONDITIONAL_CASE ::= Case  AUXID D_Punto  ;
+CONDITIONAL_CASE ::= Case  AUXNUM D_Punto  ;
+
+LoopCase ::= CONDITIONAL_CASE  SENTENCE |   CONDITIONAL_CASE  SENTENCE LoopCase ;
+
+Conditional_switch ::=   Switch    Parentesis_a  AUXID  Parentesis_c Llave_a LoopCase DefaultStructure Llave_c   ;
+ 
+
+
+ 
+Conditional_If ::= If  Parentesis_a  Combination_Op_relacional   Parentesis_c      Llave_a     SENTENCE   Llave_c  Conditional_Else   ;
+ 
+ManyCase ::=  CONDITIONAL_CASE  SENTENCE ;
+ManyCase ::=  CONDITIONAL_CASE  SENTENCE ManyCase;
+
+Conditional_While  ::= While Parentesis_a Combination_Op_relacional Parentesis_c Llave_a   SENTENCE  Llave_c
+;
+
+
+
+Conditional_For  ::= For Parentesis_a  AsigComplex_Int_Global  Combination_Op_relacional P_coma  AUXID Parentesis_c Llave_a   SENTENCE  Llave_c
+;
+
+VariableDeclaration ::=  AsigChartypes_Global_Declaration | 
+ AsigChartypes_Global_Declaration VariableDeclaration ;
+
+
+
+GLOBAL_VARAIBLES_TYPES ::=Static Type_Int  AUXID P_coma ; 
+GLOBAL_VARAIBLES_TYPES ::=Static Type_Float  AUXID P_coma ; 
+GLOBAL_VARAIBLES_TYPES ::=Static Type_Char  AUXID P_coma ; 
+GLOBAL_VARAIBLES_TYPES ::=Static Cadena  AUXID P_coma ; 
+
+
+Global_Declaration ::= auxiliador |  GLOBAL_VARAIBLES_TYPES  | GLOBAL_VARAIBLES_TYPES  VariableDeclaration | auxiliador Global_Declaration ;  
+
+Declare_Struct ::= Struct AUXID Llave_a VariableDeclaration  Llave_c ;
+
+Call_Struct ::= AUXID Punto AUXID ;
+
+Call_Struct_Declared ::= Call_Struct P_coma;
+
+Relacional_Variable ::= AUXNUM | AUXID | True | False | OperadoresConParentesis;
+
+Combination_Op_relacional ::= AUXNUM | AUXID | True | False ;
+
+Combination_Op_relacional ::= AUXNUM Op_logico Combination_Op_relacional| AUXID Op_logico Combination_Op_relacional |
+ True Op_logico Combination_Op_relacional | False Op_logico Combination_Op_relacional ;
+
+
+Combination_Op_relacional ::=  AUXNUM       Op_relacional        AUXNUM |     AUXNUM       Op_relacional        AUXNUM   Op_logico Combination_Op_relacional  ;
+Combination_Op_relacional ::=  AUXNUM       Op_relacional        Numeros |      AUXNUM      Op_relacional       Numeros  Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  AUXNUM       Op_relacional        AUXID |  AUXNUM       Op_relacional        AUXID  Op_relacional   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  AUXNUM       Op_relacional        CallArray |      AUXNUM       Op_relacional        CallArray   Op_logico Combination_Op_relacional  ;
+Combination_Op_relacional ::=  AUXNUM       Op_relacional        CallFunction |   AUXNUM       Op_relacional        CallFunction  Op_logico  Combination_Op_relacional   ;
+ 
+
+Combination_Op_relacional ::=  Numeros       Op_relacional        AUXNUM  |   Numeros       Op_relacional        AUXNUM  Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  Numeros       Op_relacional        Numeros |   Numeros       Op_relacional        Numeros Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  Numeros       Op_relacional        AUXID  |   Numeros       Op_relacional    AUXID   Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  Numeros       Op_relacional        CallArray |    Numeros       Op_relacional         CallArray  Op_logico  Combination_Op_relacional   ;
+Combination_Op_relacional ::=  Numeros       Op_relacional        CallFunction |   Numeros       Op_relacional         CallFunction   Op_logico   Combination_Op_relacional  ;
+
+Combination_Op_relacional ::=  CallArray       Op_relacional        AUXNUM  |  CallArray       Op_relacional        AUXNUM Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  CallArray       Op_relacional        Numeros |  CallArray       Op_relacional        Numeros   Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  CallArray       Op_relacional        AUXID |  CallArray       Op_relacional        AUXID   Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  CallArray       Op_relacional        CallArray |   CallArray       Op_relacional        CallArray  Op_logico   Combination_Op_relacional   ;
+Combination_Op_relacional ::=  CallArray       Op_relacional        CallFunction |   CallArray       Op_relacional        CallFunction   Op_logico   Combination_Op_relacional  ;
+
+Combination_Op_relacional ::=  AUXID       Op_relacional        AUXNUM  |  AUXID       Op_relacional        AUXNUM  Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  AUXID       Op_relacional        Numeros | AUXID       Op_relacional        Numeros Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  AUXID       Op_relacional        AUXID | AUXID       Op_relacional        AUXID  Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  AUXID       Op_relacional        CallArray |  AUXID       Op_relacional        CallArray  Op_logico Combination_Op_relacional   ;
+Combination_Op_relacional ::=  AUXID       Op_relacional        CallFunction |  AUXID       Op_relacional        CallFunction  Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  CallFunction       Op_relacional        AUXNUM  |  CallFunction       Op_relacional        AUXNUM  Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  CallFunction       Op_relacional        Numeros | CallFunction       Op_relacional        Numeros Op_logico Combination_Op_relacional  ;
+Combination_Op_relacional ::=  CallFunction       Op_relacional        AUXID | CallFunction       Op_relacional        AUXID  Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  CallFunction       Op_relacional        CallArray |  CallFunction       Op_relacional        CallArray  Op_logico  Combination_Op_relacional   ;
+Combination_Op_relacional ::=  CallFunction       Op_relacional        CallFunction |  CallFunction       Op_relacional        CallFunction   Op_logico  Combination_Op_relacional  ;
+ 
+
+
+Combination_Op_relacional ::=  True      Op_relacional        AUXNUM  |  True      Op_relacional        AUXNUM  Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  True      Op_relacional        Numeros | True      Op_relacional        Numeros Op_logico Combination_Op_relacional  ;
+Combination_Op_relacional ::=  True      Op_relacional        AUXID | True      Op_relacional        AUXID  Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  True      Op_relacional        CallArray |  True      Op_relacional        CallArray  Op_logico  Combination_Op_relacional   ;
+Combination_Op_relacional ::=  True      Op_relacional        OperadoresConParentesis |  True      Op_relacional        OperadoresConParentesis  Op_logico  Combination_Op_relacional  ;
+ 
+
+
+Combination_Op_relacional ::=  False      Op_relacional        AUXNUM  |  False      Op_relacional        AUXNUM  Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  False      Op_relacional        Numeros | False      Op_relacional        Numeros Op_logico Combination_Op_relacional  ;
+Combination_Op_relacional ::=  False      Op_relacional        AUXID | False      Op_relacional        AUXID  Op_logico   Combination_Op_relacional  ;
+Combination_Op_relacional ::=  False      Op_relacional        CallArray |  False      Op_relacional        CallArray  Op_logico  Combination_Op_relacional   ;
+Combination_Op_relacional ::=  False      Op_relacional        False|  False      Op_relacional        False  Op_logico  Combination_Op_relacional  ;
+Combination_Op_relacional ::=  False      Op_relacional        OperadoresConParentesis |  False      Op_relacional        OperadoresConParentesis  Op_logico  Combination_Op_relacional  ;
+
+
+
+
+
+Combination_Op_relacional ::=  OperadoresConParentesis       Op_relacional        AUXNUM |  OperadoresConParentesis       Op_relacional        AUXNUM   Op_logico   Combination_Op_relacional  ;
+
+
+Op_booleano ::=  True  | False   ;
+
+
+CombinationBool ::=  AUXID Op_relacional AUXID Op_logico False Op_logico CallFunction;
+ 
+DeclarationBoolean ::= Type_Bool AUXID Igual True P_coma  ;
+
+
+
+
+DeclarationBoolean ::= Type_Bool AUXID Igual False P_coma  ;
+
+
+ 
+operationsSymbols ::= operationsMath | Op_relacional     ;
+operationsMath ::=   Suma | Resta | Division | Multiplicacion  | Potencia | Modular  ;
+
+ 
+
+Number_types ::=  Type_Int | Type_Float    ;
+Char_types ::=   Type_Char |  Cadena   ;
+
+
+
+CallArray ::=  AUXID  Corchete_a  AUXNUM   Corchete_c ;
+
+
+Type_Simple_Array ::=  AUXID  Corchete_a  AUXNUM   Corchete_c  Igual Combination_operationArithmetic P_coma ;
+ 
+ 
+
+Type_Char_Array ::=   Type_Char    AUXID Corchete_a  AUXNUM   Corchete_c  P_coma ;
+Type_Int_Array ::=  Type_Int      AUXID Corchete_a  AUXNUM   Corchete_c P_coma ;
+
+
+
+Numeros ::= AUXNUM  Punto AUXNUM       ;

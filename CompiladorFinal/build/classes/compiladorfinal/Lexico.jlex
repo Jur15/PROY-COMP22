@@ -1,0 +1,235 @@
+package compiladorfinal;
+import java_cup.runtime.Symbol;
+import java.util.LinkedList;
+
+%% 
+%class Lexico
+%public 
+%line 
+%char 
+%cup 
+%unicode
+%ignorecase
+%{
+	/* Lista con errores lexicos */
+	public static LinkedList<String> ErroresLexicos=new LinkedList<String>();
+%}	
+%init{ 
+    yyline = 1; 
+    yychar = 1; 
+%init} 
+ 
+simboloX  = [|°¬!#$%&/()='?¿¡´¨+*{}]`,;.:-_<>]
+
+L_Alone = [a-zA-Z$_]
+L = [a-zA-Z$] [a-zA-Z0-9$]*
+D = [0-9]+
+espacio = [ \n|\t|\r\n ]+
+Identificador =  [A-Za-z]+["_"0-9A-Za-z]*
+
+%%
+
+
+/* Comentarios */
+( "//"(.)* ) 
+
+ 
+
+/* Comillas */
+( "\"" ) {return new Symbol(sym.Comillas, yyline,yychar,  yytext());}
+
+
+/* Comillas Simples*/
+( "\'" ) {return new Symbol(sym.Comiilas_Simples, yyline,yychar,  yytext());}
+ 
+ 
+
+/* Tipo de dato Char */
+( char ) {return new Symbol(sym.Type_Char, yyline,yychar,  yytext());}
+
+
+
+/* Tipo de dato float */
+( float ) {return new Symbol(sym.Type_Float, yyline,yychar,  yytext());}
+
+
+/* Tipo de dato String */
+( string ) {return new Symbol(sym.Cadena, yyline,yychar,  yytext());}
+
+
+
+/* Tipo de dato Return */
+( return ) {return new Symbol(sym.Return, yyline,yychar,  yytext());}
+
+/* Palabra reservada If */
+( if ) {return new Symbol(sym.If, yyline,yychar,  yytext());}
+
+/* Palabra reservada Else */
+( else ) {return new Symbol(sym.Else, yyline,yychar,  yytext());}
+ 
+/* Palabra reservada While */
+( while ) {return new Symbol(sym.While, yyline,yychar,  yytext());}
+
+
+/* Palabra reservada Switch */
+( switch ) {return new Symbol(sym.Switch, yyline,yychar,  yytext());}
+ 
+
+/* Palabra reservada true */
+( true ) {return new Symbol(sym.True, yyline,yychar,  yytext());}
+
+/* Palabra reservada false */
+( false ) {return new Symbol(sym.False, yyline,yychar,  yytext());}
+
+/* Palabra reservada case */
+( case ) {return new Symbol(sym.Case, yyline,yychar,  yytext());}
+
+/* S Punto  */
+( "." ) {return new Symbol(sym.Punto, yyline,yychar,  yytext());}
+
+/* Palabra reservada default */
+( default ) {return new Symbol(sym.Default, yyline,yychar,  yytext());}
+
+/* Palabra reservada break */
+( break ) {return new Symbol(sym.Break, yyline,yychar,  yytext());}
+
+/* Palabra reservada null */
+( null ) {return new Symbol(sym.Null, yyline,yychar,  yytext());}
+
+
+/* Palabra reservada null */
+( bool ) {return new Symbol(sym.Type_Bool, yyline,yychar,  yytext());}
+
+
+
+
+/* Palabra reservada null */
+( for ) {return new Symbol(sym.For, yyline,yychar,  yytext());}  
+
+/* Palabra reservada scrut */
+( struct ) {return new Symbol(sym.Struct, yyline,yychar,  yytext());}  
+
+ 
+
+/* Palabra reservada static */
+( static ) {return new Symbol(sym.Static, yyline,yychar,  yytext());}  
+
+
+
+/* Palabra reservada null */
+( Def ) {return new Symbol(sym.Def, yyline,yychar,  yytext());}  
+
+
+/* Palabra reservada null */
+( print ) {return new Symbol(sym.Print, yyline,yychar,  yytext());}  
+
+ 
+/* Palabra reservada null */
+( read ) {return new Symbol(sym.Read, yyline,yychar,  yytext());}  
+
+
+
+
+
+/* Palabra reservada int */
+ int  {return new Symbol(sym.Type_Int, yyline,yychar,  yytext());}
+  
+/* Operador Igual */
+( "=" ) {return new Symbol(sym.Igual, yyline,yychar,  yytext());}
+
+/* Operador Not */
+( not ) {return new Symbol(sym.Not, yyline,yychar,  yytext());}
+
+/* Operador Suma */
+( "+" ) {return new Symbol(sym.Suma, yyline,yychar,  yytext());}
+
+/* Operador Resta */
+( "-" ) {return new Symbol(sym.Resta, yyline,yychar,  yytext());}
+
+
+/* Operador Resta */
+( "^" ) {return new Symbol(sym.Potencia, yyline,yychar,  yytext());}
+
+
+/* Operador Modular */
+( "~" ) {return new Symbol(sym.Modular, yyline,yychar,  yytext());}
+
+
+/* Operador Multiplicacion */
+( "*" ) {return new Symbol(sym.Multiplicacion, yyline,yychar,  yytext());}
+
+/* Operador Division */
+( "/" ) {return new Symbol(sym.Division, yyline,yychar,  yytext());}
+
+/* Operadores logicos */
+(  "&" | or) {return new Symbol(sym.Op_logico, yyline,yychar,  yytext());}
+
+/*Operadores Relacionales */
+( ">" | "<" | "==" | "!=" | ">=" | "<=" ) {return new Symbol(sym.Op_relacional, yyline,yychar,  yytext());}
+
+/* Operadores Atribucion */
+( "+=" | "-="  | "*=" | "/=" | "%=" | "=" ) {return new Symbol(sym.Op_atribucion, yyline,yychar,  yytext());}
+
+/* Operadores Incremento y decremento */
+( "++" | "--" ) {return new Symbol(sym.Op_incremento, yyline,yychar,  yytext());}
+ 
+
+/* Parentesis de apertura */
+( "(" ) {return new Symbol(sym.Parentesis_a, yyline,yychar,  yytext());}
+
+/* Parentesis de cierre */
+( ")" ) {return new Symbol(sym.Parentesis_c, yyline,yychar,  yytext());}
+
+/* Llave de apertura */
+( "{" ) {return new Symbol(sym.Llave_a, yyline,yychar,  yytext());}
+
+/* Llave de cierre */
+( "}" ) {return new Symbol(sym.Llave_c, yyline,yychar,  yytext());}
+
+/* Corchete de apertura */
+( "[" ) {return new Symbol(sym.Corchete_a, yyline,yychar,  yytext());}
+
+/* Corchete de cierre */
+( "]" ) {return new Symbol(sym.Corchete_c, yyline,yychar,  yytext());}
+
+/* Marcador de inicio de algoritmo */
+( "main" ) {return new Symbol(sym.Main, yyline,yychar,  yytext());}
+
+/* Punto y coma xd*/
+ "#" {return new Symbol(sym.P_coma, yyline,yychar,  yytext());}
+
+/* Guion Bajo */
+( "_" ) {return new Symbol(sym.G_Bajo, yyline,yychar,  yytext());}
+
+
+
+/* Guion Bajo */
+( "$" ) {return new Symbol(sym.S_Dolar, yyline,yychar,  yytext());}
+
+
+
+/* Guion Bajo */
+( "," ) {return new Symbol(sym.coma, yyline,yychar,  yytext());}
+
+/* Guion D_Punto */
+( ":" ) {return new Symbol(sym.D_Punto, yyline,yychar,  yytext());}
+
+ 
+/* Identificador */
+{Identificador} {return new Symbol(sym.Identificador,yyline,yychar, yytext());} 
+
+/* Numero */
+("(-"{D}+")")|{D}+ {return new Symbol(sym.Numero, yyline,yychar,  yytext());}
+
+
+\n {yychar=1;}
+
+{espacio} {} 
+
+
+/* Error de analisis */
+ . {return new Symbol(sym.ERROR, yychar, yyline, yytext());}
+. {
+    System.err.println("Este es un error lexico: "+yytext()+", en la linea: "+yyline+", en la columna: "+yychar);
+    ErroresLexicos.add("Este es un error lexico: "+yytext()+", en la linea: "+yyline+", en la columna: "+yychar + " con el caracter:\n " +yytext() + "\n");
+}
